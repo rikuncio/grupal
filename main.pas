@@ -256,7 +256,9 @@ BEGIN
 			'K','k':
 			'L','l':}
 			'M','m': writeln('Fin del programa.');
-		ELSE
-			writeln('Opción incorrecta.');
+			ELSE
+				writeln('Opción incorrecta.');
+		END;
+		readln;
 	UNTIL ((opcion='M') OR (opcion='m'));
 END.
