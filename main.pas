@@ -37,7 +37,7 @@ TYPE
 	tFicheroPcs = FILE OF tPc;
 	tFicheroComponentes = FILE OF tComponente;
 VAR
-    j:integer;
+	j:integer;
 	almacenComponentes:tAlmacenComponentes;
 	almacenPcs:tAlmacenPcs;
 	ficheroComponentes:text;
@@ -48,7 +48,7 @@ VAR
 	listaPc:tListaPcs;
 PROCEDURE guardarBin (almComp:tAlmacenComponentes; almPcs:tAlmacenPcs; VAR fichComp:tFicheroComponentes; VAR fichPcs:tFicheroPcs);
 VAR
-    i:integer;
+	i:integer;
 BEGIN
 	ASSIGN(fichComp,'componentes.dat');
 	REWRITE(fichComp);
@@ -66,11 +66,11 @@ END;
 
 PROCEDURE cargarBin(VAR almComp:tAlmacenComponentes;VAR almPcs:tAlmacenPcs; VAR fichComp:tFicheroComponentes; VAR fichPcs:tFicheroPcs);
 VAR
-    i:integer;
-    comp:tComponente;
-    pc:tPc;
-    listaC:tListaComponentes;
-    listaP:tListaPcs;
+	i:integer;
+	comp:tComponente;
+	pc:tPc;
+	listaC:tListaComponentes;
+	listaP:tListaPcs;
 BEGIN
     i:=1;
     ASSIGN(fichComp,'componentes.dat');
