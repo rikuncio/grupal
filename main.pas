@@ -36,9 +36,6 @@ TYPE
 	END;
 	tFicheroPcs = FILE OF tPc;
 	tFicheroComponentes = FILE OF tComponente;
-{----------------------Aqui estan las VAR----------------------}
-VAR
-	opcion:char;
 
 PROCEDURE mostrarMenu;
 BEGIN
@@ -237,7 +234,29 @@ BEGIN
 		almPcs.listaPcs:=listaP;
 	END;
 END;
+{----------------------Aqui estan las VAR----------------------}
+VAR
+	opcion:char;
 {----------------------Aqui empieza el programa principal----------------------}
 BEGIN
-    
+	REPEAT
+		mostrarMenu;
+		readln(opcion);
+		CASE opcion OF
+		{	'A','a':
+			'B','b':
+			'C','c':
+			'D','d':
+			'E','e':
+			'F','f':
+			'G','g':
+			'H','h':
+			'I','i':
+			'J','j':
+			'K','k':
+			'L','l':}
+			'M','m': writeln('Fin del programa.');
+		ELSE
+			writeln('Opción incorrecta.');
+	UNTIL ((opcion='M') OR (opcion='m'));
 END.
