@@ -36,16 +36,10 @@ TYPE
 	END;
 	tFicheroPcs = FILE OF tPc;
 	tFicheroComponentes = FILE OF tComponente;
+{----------------------Aqui estan las VAR----------------------}
 VAR
-	j:integer;
-	almacenComponentes:tAlmacenComponentes;
-	almacenPcs:tAlmacenPcs;
-	ficheroComponentes:text;
-	ficheroPcs:text;
-	componente:tComponente;
-	listaComponent:tListaComponentes;
-	pc:tPc;
-	listaPc:tListaPcs;
+	opcion:char;
+
 PROCEDURE guardarBin (almComp:tAlmacenComponentes; almPcs:tAlmacenPcs; VAR fichComp:tFicheroComponentes; VAR fichPcs:tFicheroPcs);
 VAR
 	i:integer;
@@ -225,6 +219,7 @@ BEGIN
 		almPcs.listaPcs:=listaP;
 	END;
 END;
+{----------------------Aqui empieza el programa principal----------------------}
 BEGIN
     
 END.
