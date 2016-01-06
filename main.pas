@@ -53,14 +53,14 @@ BEGIN
 	ASSIGN(fichComp,'componentes.dat');
 	REWRITE(fichComp);
 	WITH almComp DO
-    	FOR i:=1 TO tope DO
-    	    WRITE(fichComp,listaComponentes[i]);
+		FOR i:=1 TO tope DO
+			WRITE(fichComp,listaComponentes[i]);
 	CLOSE(fichComp);
 	ASSIGN(fichPcs,'ordenadores.dat');
 	REWRITE(fichPcs);
 	WITH almPcs DO
-	    FOR i:=1 TO tope DO
-	        WRITE(fichPcs,listaPcs[i]);
+		FOR i:=1 TO tope DO
+			WRITE(fichPcs,listaPcs[i]);
 	CLOSE(fichPcs);
 END;
 
@@ -72,158 +72,158 @@ VAR
 	listaC:tListaComponentes;
 	listaP:tListaPcs;
 BEGIN
-    i:=1;
-    ASSIGN(fichComp,'componentes.dat');
-    RESET(fichComp);
-    WHILE NOT EOF(fichComp) DO
-    BEGIN
-        read(fichComp,comp);
-        listaC[i]:=comp;
-        i:=i+1;
-    END;
-    WITH almComp DO
-    BEGIN
-        almComp.tope:=i-1;
-        almComp.listaComponentes:=listaC;
-    END;
-    i:=1;
-    ASSIGN(fichPcs,'ordenadores.dat');
-    RESET(fichPcs);
-    WHILE NOT EOF(fichPcs) DO
-    BEGIN
-        read(fichPcs,pc);
-        listaP[i]:=pc;
-        i:=i+1;
-    END;
-    WITH almPcs DO
-    BEGIN
-        almPcs.tope:=i-1;
-        almPcs.listaPcs:=listaP;
-    END;
+	i:=1;
+	ASSIGN(fichComp,'componentes.dat');
+	RESET(fichComp);
+	WHILE NOT EOF(fichComp) DO
+	BEGIN
+		read(fichComp,comp);
+		listaC[i]:=comp;
+		i:=i+1;
+	END;
+	WITH almComp DO
+	BEGIN
+		almComp.tope:=i-1;
+		almComp.listaComponentes:=listaC;
+	END;
+	i:=1;
+	ASSIGN(fichPcs,'ordenadores.dat');
+	RESET(fichPcs);
+	WHILE NOT EOF(fichPcs) DO
+	BEGIN
+		read(fichPcs,pc);
+		listaP[i]:=pc;
+		i:=i+1;
+	END;
+	WITH almPcs DO
+	BEGIN
+		almPcs.tope:=i-1;
+		almPcs.listaPcs:=listaP;
+	END;
 END;
 
 PROCEDURE guardarText (almComp:tAlmacenComponentes; almPcs:tAlmacenPcs; VAR fichComp:text; VAR fichPcs:text);
 VAR
-    i:integer;
+	i:integer;
 BEGIN
-    ASSIGN(fichComp,'componentes.txt');
+	ASSIGN(fichComp,'componentes.txt');
 	REWRITE(fichComp);
 	WITH almComp DO
-    	FOR i:=1 TO tope DO
-    	    WITH listacomponentes[i] DO
-    	    BEGIN
-    	        writeln(fichComp,tipo);
-    	        writeln(fichComp,id);
-    	        writeln(fichComp,descripcion);
-    	        writeln(fichComp,precio);
-            END;
+		FOR i:=1 TO tope DO
+			WITH listacomponentes[i] DO
+			BEGIN
+				writeln(fichComp,tipo);
+				writeln(fichComp,id);
+				writeln(fichComp,descripcion);
+				writeln(fichComp,precio);
+			END;
 	CLOSE(fichComp);
 	ASSIGN(fichPcs,'ordenadores.txt');
 	REWRITE(fichPcs);
 	WITH almPcs DO
-	    FOR i:=1 TO tope DO
-	        WITH listaPcs[i] DO
-	        BEGIN
-	            WITH datos DO
-	            BEGIN
-        	        writeln(fichPcs,tipo);
-        	        writeln(fichPcs,id);
-        	        writeln(fichPcs,descripcion);
-        	        writeln(fichPcs,precio);
-                END;
-                WITH memoria DO
-                BEGIN
-        	        writeln(fichPcs,tipo);
-        	        writeln(fichPcs,id);
-        	        writeln(fichPcs,descripcion);
-        	        writeln(fichPcs,precio);
-                END;
-                WITH procesador DO
-                BEGIN
-        	        writeln(fichPcs,tipo);
-        	        writeln(fichPcs,id);
-        	        writeln(fichPcs,descripcion);
-        	        writeln(fichPcs,precio);
-                END;
-                WITH discoDuro DO
-                BEGIN
-        	        writeln(fichPcs,tipo);
-        	        writeln(fichPcs,id);
-        	        writeln(fichPcs,descripcion);
-        	        writeln(fichPcs,precio);
-                END;
-            END;
+		FOR i:=1 TO tope DO
+			WITH listaPcs[i] DO
+			BEGIN
+				WITH datos DO
+				BEGIN
+					writeln(fichPcs,tipo);
+					writeln(fichPcs,id);
+					writeln(fichPcs,descripcion);
+					writeln(fichPcs,precio);
+				END;
+				WITH memoria DO
+				BEGIN
+					writeln(fichPcs,tipo);
+					writeln(fichPcs,id);
+					writeln(fichPcs,descripcion);
+					writeln(fichPcs,precio);
+				END;
+				WITH procesador DO
+				BEGIN
+					writeln(fichPcs,tipo);
+					writeln(fichPcs,id);
+					writeln(fichPcs,descripcion);
+					writeln(fichPcs,precio);
+				END;
+				WITH discoDuro DO
+				BEGIN
+					writeln(fichPcs,tipo);
+					writeln(fichPcs,id);
+					writeln(fichPcs,descripcion);
+					writeln(fichPcs,precio);
+				END;
+			END;
 	CLOSE(fichPcs);
 END;
 
 PROCEDURE cargarText(VAR almComp:tAlmacenComponentes;VAR almPcs:tAlmacenPcs; VAR fichComp:text; VAR fichPcs:text);
 VAR
-    i:integer;
-    listaC:tListaComponentes;
-    listaP:tListaPcs;
+	i:integer;
+	listaC:tListaComponentes;
+	listaP:tListaPcs;
 BEGIN
-    i:=1;
-    ASSIGN(fichComp,'componentes.txt');
-    RESET(fichComp);
-    WHILE NOT EOF(fichComp) DO
-    BEGIN
-        WITH listaC[i] DO
-        BEGIN
-            readln(fichComp,tipo);
-            readln(fichComp,id);
-            readln(fichComp,descripcion);
-            readln(fichComp,precio);
-        END;
-        i:=i+1;
-    END;
-    WITH almComp DO
-    BEGIN
-        almComp.tope:=i-1;
-        almComp.listaComponentes:=listaC;
-    END;
-    i:=1;
-    ASSIGN(fichPcs,'ordenadores.txt');
-    RESET(fichPcs);
-    WHILE NOT EOF(fichPcs) DO
-    BEGIN
-        WITH listaP[i] DO
-        BEGIN
-            WITH datos DO
-            BEGIN
-                readln(fichPcs,tipo);
-                readln(fichPcs,id);
-                readln(fichPcs,descripcion);
-                readln(fichPcs,precio);
-            END;
-            WITH memoria DO
-            BEGIN
-                readln(fichPcs,tipo);
-                readln(fichPcs,id);
-                readln(fichPcs,descripcion);
-                readln(fichPcs,precio);
-            END;
-            WITH procesador DO
-            BEGIN
-                readln(fichPcs,tipo);
-                readln(fichPcs,id);
-                readln(fichPcs,descripcion);
-                readln(fichPcs,precio);
-            END;
-            WITH discoDuro DO
-            BEGIN
-                readln(fichPcs,tipo);
-                readln(fichPcs,id);
-                readln(fichPcs,descripcion);
-                readln(fichPcs,precio);
-            END;
-        END;
-        i:=i+1;
-    END;
-    WITH almPcs DO
-    BEGIN
-        almPcs.tope:=i-1;
-        almPcs.listaPcs:=listaP;
-    END;
+	i:=1;
+	ASSIGN(fichComp,'componentes.txt');
+	RESET(fichComp);
+	WHILE NOT EOF(fichComp) DO
+	BEGIN
+		WITH listaC[i] DO
+		BEGIN
+			readln(fichComp,tipo);
+			readln(fichComp,id);
+			readln(fichComp,descripcion);
+			readln(fichComp,precio);
+		END;
+		i:=i+1;
+	END;
+	WITH almComp DO
+	BEGIN
+		almComp.tope:=i-1;
+		almComp.listaComponentes:=listaC;
+	END;
+	i:=1;
+	ASSIGN(fichPcs,'ordenadores.txt');
+	RESET(fichPcs);
+	WHILE NOT EOF(fichPcs) DO
+	BEGIN
+		WITH listaP[i] DO
+		BEGIN
+			WITH datos DO
+			BEGIN
+				readln(fichPcs,tipo);
+				readln(fichPcs,id);
+				readln(fichPcs,descripcion);
+				readln(fichPcs,precio);
+			END;
+			WITH memoria DO
+			BEGIN
+				readln(fichPcs,tipo);
+				readln(fichPcs,id);
+				readln(fichPcs,descripcion);
+				readln(fichPcs,precio);
+			END;
+			WITH procesador DO
+			BEGIN
+				readln(fichPcs,tipo);
+				readln(fichPcs,id);
+				readln(fichPcs,descripcion);
+				readln(fichPcs,precio);
+			END;
+			WITH discoDuro DO
+			BEGIN
+				readln(fichPcs,tipo);
+				readln(fichPcs,id);
+				readln(fichPcs,descripcion);
+				readln(fichPcs,precio);
+			END;
+		END;
+		i:=i+1;
+	END;
+	WITH almPcs DO
+	BEGIN
+		almPcs.tope:=i-1;
+		almPcs.listaPcs:=listaP;
+	END;
 END;
 BEGIN
     
