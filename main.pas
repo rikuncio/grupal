@@ -40,6 +40,24 @@ TYPE
 VAR
 	opcion:char;
 
+PROCEDURE mostrarMenu;
+BEGIN
+	writeln('------------------------------------------------------------------------');
+	writeln('A) Dar de alta un componente.');
+	writeln('B) Configurar un ordenador.');
+	writeln('C) Modificar un componente.');
+	writeln('D) Vender un componente');
+	writeln('E) Vender un ordenador');
+	writeln('F) Mostrar las ventas actuales');
+	writeln('G) Mostrar todos los ordenadores ordenados por precio de menor a mayor');
+	writeln('H) Mostrar todos los componentes sueltos');
+	writeln('I) Guardar datos en ficheros binarios');
+	writeln('J) Guardar datos en ficheros de texto');
+	writeln('K) Cargar datos de ficheros binarios');
+	writeln('L) Cargar datos de ficheros de texto');
+	writeln('M) Finalizar');
+	writeln('Introduzca una opcion:');
+END;
 PROCEDURE guardarBin (almComp:tAlmacenComponentes; almPcs:tAlmacenPcs; VAR fichComp:tFicheroComponentes; VAR fichPcs:tFicheroPcs);
 VAR
 	i:integer;
