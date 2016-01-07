@@ -242,6 +242,28 @@ BEGIN
 		ventasTotales:=0;
 	END;
 END;
+FUNCTION comprobarFicheros(tipo:string):boolean;
+VAR
+	fich:text;
+BEGIN
+	ASSIGN (fich,'componentes.'+tipo);
+	{$i-}
+	RESET (fich);
+	{$i+}
+	IF (IOResult<>0) THEN
+		comprobarFicheros:=FALSE
+	ELSE
+	BEGIN
+		ASSIGN (fich,'ordenadores.'+tipo);
+		{$i-}
+		RESET (fich);
+		{$i+}
+		IF (IOResult<>0) THEN
+			comprobarFicheros:=FALSE
+		ELSE
+			comprobarFicheros:=TRUE;
+	END;
+END;
 {----------------------Aqui estan las VAR----------------------}
 VAR
 	opcion,subopcion:char;
@@ -249,7 +271,7 @@ VAR
 	compBin:tFicheroComponentes;
 	ordBin:tFicheroPcs;
 	compText,ordText:text;
-	
+	existe:boolean;
 {----------------------Aqui empieza el programa principal----------------------}
 BEGIN
 	REPEAT
@@ -292,7 +314,13 @@ BEGIN
 					readln(subopcion)
 				UNTIL ((subopcion='S') OR (subopcion='N'));
 				IF (subopcion='S') THEN
-					cargarBin(tienda,compBin,ordBin);
+				BEGIN
+					existe:=comprobarFicheros('dat');
+					IF existe THEN
+						cargarBin(tienda,compBin,ordBin)
+					ELSE
+						writeln('El fichero no existe');
+				END;
 			END;
 			'L','l':
 			BEGIN
@@ -302,7 +330,13 @@ BEGIN
 					readln(subopcion)
 				UNTIL ((subopcion='S') OR (subopcion='N'));
 				IF (subopcion='S') THEN
-					cargarText(tienda,compText,ordText);
+				BEGIN
+					existe:=comprobarFicheros('txt');
+					IF existe THEN
+						cargarText(tienda,compText,ordText)
+					ELSE
+						writeln('El fichero no existe');
+				END;
 			END;
 			'M','m': writeln('Fin del programa.');
 			ELSE
