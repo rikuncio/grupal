@@ -1,4 +1,4 @@
-PROGRAM tienda;
+PROGRAM tiendaURJC;
 CONST
 	NCTIPO = 15; 
 	NCIDENTIFICADOR = 4; 
@@ -55,123 +55,128 @@ BEGIN
 	writeln('M) Finalizar');
 	writeln('Introduzca una opcion:');
 END;
-PROCEDURE guardarBin (almComp:tAlmacenComponentes; almPcs:tAlmacenPcs; VAR fichComp:tFicheroComponentes; VAR fichPcs:tFicheroPcs);
+PROCEDURE guardarBin (tien:tTienda; VAR fichComp:tFicheroComponentes; VAR fichPcs:tFicheroPcs);
 VAR
 	i:integer;
 BEGIN
 	ASSIGN(fichComp,'componentes.dat');
 	REWRITE(fichComp);
-	WITH almComp DO
-		FOR i:=1 TO tope DO
-			WRITE(fichComp,listaComponentes[i]);
+	WITH tien DO
+		WITH almacenComponentes DO
+			FOR i:=1 TO tope DO
+				WRITE(fichComp,listaComponentes[i]);
 	CLOSE(fichComp);
 	ASSIGN(fichPcs,'ordenadores.dat');
 	REWRITE(fichPcs);
-	WITH almPcs DO
-		FOR i:=1 TO tope DO
-			WRITE(fichPcs,listaPcs[i]);
+	WITH tien DO
+		WITH almacenPcs DO
+			FOR i:=1 TO tope DO
+				WRITE(fichPcs,listaPcs[i]);
 	CLOSE(fichPcs);
 END;
 
-PROCEDURE cargarBin(VAR almComp:tAlmacenComponentes;VAR almPcs:tAlmacenPcs; VAR fichComp:tFicheroComponentes; VAR fichPcs:tFicheroPcs);
+PROCEDURE cargarBin(VAR tien:tTienda; VAR fichComp:tFicheroComponentes; VAR fichPcs:tFicheroPcs);
 VAR
-	i:integer;
-	comp:tComponente;
-	pc:tPc;
+	i,j:integer;
 	listaC:tListaComponentes;
 	listaP:tListaPcs;
 BEGIN
 	i:=1;
+	j:=1;
 	ASSIGN(fichComp,'componentes.dat');
 	RESET(fichComp);
 	WHILE NOT EOF(fichComp) DO
 	BEGIN
-		read(fichComp,comp);
-		listaC[i]:=comp;
+		read(fichComp,listaC[i]);
 		i:=i+1;
 	END;
-	WITH almComp DO
-	BEGIN
-		almComp.tope:=i-1;
-		almComp.listaComponentes:=listaC;
-	END;
-	i:=1;
 	ASSIGN(fichPcs,'ordenadores.dat');
 	RESET(fichPcs);
 	WHILE NOT EOF(fichPcs) DO
 	BEGIN
-		read(fichPcs,pc);
-		listaP[i]:=pc;
-		i:=i+1;
+		read(fichPcs,listaP[j]);
+		j:=j+1;
 	END;
-	WITH almPcs DO
+	WITH tien DO
 	BEGIN
-		almPcs.tope:=i-1;
-		almPcs.listaPcs:=listaP;
+		WITH almacenPcs DO
+		BEGIN
+			tope:=j-1;
+			listaPcs:=listaP;
+		END;
+		WITH almacenComponentes DO
+		BEGIN
+			tope:=i-1;
+			listaComponentes:=listaC;
+		END;
+		ventasTotales:=0;
 	END;
 END;
 
-PROCEDURE guardarText (almComp:tAlmacenComponentes; almPcs:tAlmacenPcs; VAR fichComp:text; VAR fichPcs:text);
+PROCEDURE guardarText (tien:tTienda; VAR fichComp:text; VAR fichPcs:text);
 VAR
 	i:integer;
 BEGIN
 	ASSIGN(fichComp,'componentes.txt');
 	REWRITE(fichComp);
-	WITH almComp DO
-		FOR i:=1 TO tope DO
-			WITH listacomponentes[i] DO
-			BEGIN
-				writeln(fichComp,tipo);
-				writeln(fichComp,id);
-				writeln(fichComp,descripcion);
-				writeln(fichComp,precio);
-			END;
+	WITH tien DO
+		WITH almacenComponentes DO
+			FOR i:=1 TO tope DO
+				WITH listacomponentes[i] DO
+    				BEGIN
+	    				writeln(fichComp,tipo);
+	    				writeln(fichComp,id);
+	    				writeln(fichComp,descripcion);
+	    				writeln(fichComp,precio);
+				END;
 	CLOSE(fichComp);
 	ASSIGN(fichPcs,'ordenadores.txt');
 	REWRITE(fichPcs);
-	WITH almPcs DO
-		FOR i:=1 TO tope DO
-			WITH listaPcs[i] DO
-			BEGIN
-				WITH datos DO
+	WITH tien DO
+		WITH almacenPcs DO
+			FOR i:=1 TO tope DO
+				WITH listaPcs[i] DO
 				BEGIN
-					writeln(fichPcs,tipo);
-					writeln(fichPcs,id);
-					writeln(fichPcs,descripcion);
-					writeln(fichPcs,precio);
+					WITH datos DO
+					BEGIN
+						writeln(fichPcs,tipo);
+						writeln(fichPcs,id);
+						writeln(fichPcs,descripcion);
+						writeln(fichPcs,precio);
+					END;
+					WITH memoria DO
+					BEGIN
+						writeln(fichPcs,tipo);
+						writeln(fichPcs,id);
+						writeln(fichPcs,descripcion);
+						writeln(fichPcs,precio);
+					END;
+					WITH procesador DO
+					BEGIN
+						writeln(fichPcs,tipo);
+						writeln(fichPcs,id);
+						writeln(fichPcs,descripcion);
+						writeln(fichPcs,precio);
+					END;
+					WITH discoDuro DO
+					BEGIN
+						writeln(fichPcs,tipo);
+						writeln(fichPcs,id);
+						writeln(fichPcs,descripcion);
+						writeln(fichPcs,precio);
+					END;
 				END;
-				WITH memoria DO
-				BEGIN
-					writeln(fichPcs,tipo);
-					writeln(fichPcs,id);
-					writeln(fichPcs,descripcion);
-					writeln(fichPcs,precio);
-				END;
-				WITH procesador DO
-				BEGIN
-					writeln(fichPcs,tipo);
-					writeln(fichPcs,id);
-					writeln(fichPcs,descripcion);
-					writeln(fichPcs,precio);
-				END;
-				WITH discoDuro DO
-				BEGIN
-					writeln(fichPcs,tipo);
-					writeln(fichPcs,id);
-					writeln(fichPcs,descripcion);
-					writeln(fichPcs,precio);
-				END;
-			END;
 	CLOSE(fichPcs);
 END;
 
-PROCEDURE cargarText(VAR almComp:tAlmacenComponentes;VAR almPcs:tAlmacenPcs; VAR fichComp:text; VAR fichPcs:text);
+PROCEDURE cargarText(VAR tien:tTienda; VAR fichComp:text; VAR fichPcs:text);
 VAR
-	i:integer;
+	i,j:integer;
 	listaC:tListaComponentes;
 	listaP:tListaPcs;
 BEGIN
 	i:=1;
+	j:=1;
 	ASSIGN(fichComp,'componentes.txt');
 	RESET(fichComp);
 	WHILE NOT EOF(fichComp) DO
@@ -185,17 +190,11 @@ BEGIN
 		END;
 		i:=i+1;
 	END;
-	WITH almComp DO
-	BEGIN
-		almComp.tope:=i-1;
-		almComp.listaComponentes:=listaC;
-	END;
-	i:=1;
 	ASSIGN(fichPcs,'ordenadores.txt');
 	RESET(fichPcs);
 	WHILE NOT EOF(fichPcs) DO
 	BEGIN
-		WITH listaP[i] DO
+		WITH listaP[j] DO
 		BEGIN
 			WITH datos DO
 			BEGIN
@@ -226,17 +225,31 @@ BEGIN
 				readln(fichPcs,precio);
 			END;
 		END;
-		i:=i+1;
+		j:=j+1;
 	END;
-	WITH almPcs DO
+	WITH tien DO
 	BEGIN
-		almPcs.tope:=i-1;
-		almPcs.listaPcs:=listaP;
+		WITH almacenPcs DO
+		BEGIN
+			listaPcs:=listaP;
+			tope:=j-1;
+		END;
+		WITH almacenComponentes DO
+		BEGIN
+			listaComponentes:=listaC;
+			tope:=i-1;
+		END;
+		ventasTotales:=0;
 	END;
 END;
 {----------------------Aqui estan las VAR----------------------}
 VAR
-	opcion:char;
+	opcion,subopcion:char;
+	tienda:tTienda;
+	compBin:tFicheroComponentes;
+	ordBin:tFicheroPcs;
+	compText,ordText:text;
+	
 {----------------------Aqui empieza el programa principal----------------------}
 BEGIN
 	REPEAT
@@ -250,11 +263,47 @@ BEGIN
 			'E','e':
 			'F','f':
 			'G','g':
-			'H','h':
+			'H','h':}
 			'I','i':
+			BEGIN
+				writeln('Al guardar los datos, se sobreescribiran los datos anteriormente guardados.');
+				REPEAT
+					writeln('¿Desea continuar? (S/N)');
+					readln(subopcion)
+				UNTIL ((subopcion='S') OR (subopcion='N'));
+				IF (subopcion='S') THEN
+					guardarBin(tienda,compBin,ordBin);
+			END;
 			'J','j':
+			BEGIN
+				writeln('Al guardar los datos, se sobreescribiran los datos anteriormente guardados.');
+				REPEAT
+					writeln('¿Desea continuar? (S/N)');
+					readln(subopcion)
+				UNTIL ((subopcion='S') OR (subopcion='N'));
+				IF (subopcion='S') THEN
+					guardarText(tienda,compText,ordText);
+				END;
 			'K','k':
-			'L','l':}
+			BEGIN
+				writeln('Al cargar los datos desde el fichero, se sobreescribiran los datos cargados en el sistema.');
+				REPEAT
+					writeln('¿Desea continuar? (S/N)');
+					readln(subopcion)
+				UNTIL ((subopcion='S') OR (subopcion='N'));
+				IF (subopcion='S') THEN
+					cargarBin(tienda,compBin,ordBin);
+    		END;
+			'L','l':
+			BEGIN
+				writeln('Al cargar los datos desde el fichero, se sobreescribiran los datos cargados en el sistema.');
+				REPEAT
+					writeln('¿Desea continuar? (S/N)');
+					readln(subopcion)
+				UNTIL ((subopcion='S') OR (subopcion='N'));
+				IF (subopcion='S') THEN
+					cargarText(tienda,compText,ordText);
+			END;
 			'M','m': writeln('Fin del programa.');
 			ELSE
 				writeln('Opción incorrecta.');
