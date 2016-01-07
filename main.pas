@@ -293,7 +293,7 @@ BEGIN
 				UNTIL ((subopcion='S') OR (subopcion='N'));
 				IF (subopcion='S') THEN
 					cargarBin(tienda,compBin,ordBin);
-    		END;
+			END;
 			'L','l':
 			BEGIN
 				writeln('Al cargar los datos desde el fichero, se sobreescribiran los datos cargados en el sistema.');
