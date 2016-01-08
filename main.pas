@@ -449,9 +449,7 @@ BEGIN
 							aux:=aux+1;
 						END;
 					UNTIL (aux = 3);
-					{ procesador:=buscarProce(almaComp);
-					discoDuro:=buscarDisco(almaComp);
-					memoria:=buscarMemoria(almaComp);}
+					
 					writeln('Introduzca un identificador');
 					readln(datos.id);
 					writeln('Introudzca una descripcion');
