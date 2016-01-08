@@ -66,7 +66,7 @@ BEGIN{leerComp}
 		writeln('Introduzca la descripcion:');
 		readln(descripcion);
 		writeln('Introduzca el precio');
-		readln(precio:0:2);
+		readln(precio);
 	END;
 END;{leerComp}
 
@@ -152,7 +152,7 @@ BEGIN{mostrar}
 		writeln('Descripcion del componente:');
 		writeln(descripcion);
 		writeln('Precio del componente');
-		writeln(precio);
+		writeln(precio:0:2);
 	END;
 END;{mostrar}
 
@@ -482,7 +482,7 @@ BEGIN
 						END;
 						'3':BEGIN
 							writeln('Modificar el precio');
-							writeln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].precio);
+							writeln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].precio:0:2);
 						END;
 						END;{CASE}
 					UNTIL (subopcion='f') OR (subopcion='F');
