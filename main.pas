@@ -446,9 +446,6 @@ BEGIN
 							aux:=aux+1;
 						END;
 					UNTIL (aux = 3);
-					{ procesador:=buscarProce(tienda.almacenComponentes);
-					discoDuro:=buscarDisco(tienda.almacenComponentes);
-					memoria:=buscarMemoria(tienda.almacenComponentes);}
 					writeln('Introduzca un identificador');
 					readln(datos.id);
 					writeln('Introudzca una descripcion');
