@@ -41,10 +41,10 @@ PROCEDURE inicio(VAR tien:tTienda);
 BEGIN{inicio}
 	WITH tien DO
 	BEGIN
-		almacenComponentes.tope:=0;
-		almacenPcs.tope:=0;
-		ventasTotales:=0;
-	END;
+	    almacenComponentes.tope:=0;
+	    almacenPcs.tope:=0;
+	    ventasTotales:=0;
+    END;
 END;{inicio}
 
 FUNCTION comprobAlmacen (almacenComp:tAlmacenComponentes):boolean;
@@ -401,6 +401,7 @@ VAR
 	existe:boolean;
 	componente,comp:tComponente;
 	pc:tPc;
+	almaPc:tAlmacenPcs;
 	modComp,ide,venta:tIdentificador;
 	aux:integer;
 {----------------------Aqui empieza el programa principal----------------------}
@@ -426,10 +427,12 @@ BEGIN
 				WITH pc DO BEGIN
 					REPEAT
 						aux:=0;
+						writeln('Configurar un ordenador:');
+						writeln;
 						writeln('Introduzca un identificador');
 						readln(ide);
 						comp:=buscar(ide,tienda.almacenComponentes);
-						writeln('Configurar un ordenador');
+						
 						IF (comp.tipo = 'procesador') AND ( aux = 0)THEN
 						BEGIN
 							procesador:=comp;
