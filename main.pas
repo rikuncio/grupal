@@ -399,7 +399,7 @@ VAR
 	ordBin:tFicheroPcs;
 	compText,ordText:text;
 	existe:boolean;
-	componente,comp,componenteMod:tComponente;
+	componente,comp:tComponente;
 	almaComp:tAlmacenComponentes;
 	pc:tPc;
 	almaPc:tAlmacenPcs;
