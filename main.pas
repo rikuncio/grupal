@@ -489,7 +489,7 @@ BEGIN
 							writeln(almaComp.listaComponentes[posicion(almaComp,modComp)].precio);
 						END;
 						END;{CASE}
-					UNTIL (opcion2='f') OR (opcion2='F');
+					UNTIL (subopcion='f') OR (subopcion='F');
 				END;{BEGIN IF}
 			END;
 			'D','d':
