@@ -1,4 +1,4 @@
 # grupal
--Faltan por incluir las opciones desde A hasta H.
+-Faltan por incluir las opciones desde E hasta H.
 
 -Optimizacion
