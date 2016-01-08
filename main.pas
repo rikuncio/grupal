@@ -471,7 +471,7 @@ BEGIN
 					REPEAT
 						menuComp;
 						readln(subopcion);
-						CASE opcion OF
+						CASE subopcion OF
 						'1':BEGIN
 							writeln('Modificar el tipo');
 							writeln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].tipo);
