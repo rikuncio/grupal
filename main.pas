@@ -41,10 +41,10 @@ PROCEDURE inicio(VAR tien:tTienda);
 BEGIN{inicio}
 	WITH tien DO
 	BEGIN
-	    almacenComponentes.tope:=0;
-	    almacenPcs.tope:=0;
-	    ventasTotales:=0;
-    END;
+		almacenComponentes.tope:=0;
+		almacenPcs.tope:=0;
+		ventasTotales:=0;
+	END;
 END;{inicio}
 
 FUNCTION comprobAlmacen (almacenComp:tAlmacenComponentes):boolean;
@@ -66,7 +66,7 @@ BEGIN{leerComp}
 		writeln('Introduzca la descripcion:');
 		readln(descripcion);
 		writeln('Introduzca el precio');
-		readln(precio);
+		readln(precio:0:2);
 	END;
 END;{leerComp}
 
@@ -401,7 +401,6 @@ VAR
 	existe:boolean;
 	componente,comp:tComponente;
 	pc:tPc;
-	almaPc:tAlmacenPcs;
 	modComp,ide,venta:tIdentificador;
 	aux:integer;
 {----------------------Aqui empieza el programa principal----------------------}
