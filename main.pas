@@ -179,7 +179,8 @@ BEGIN{menu}
 	writeln('MENU DE MODIFICACION');
 	writeln('1.- Modificar el tipo');
 	writeln('2.- Modificar la descripcion');
-	writeln('3.- Modificar el precio')
+	writeln('3.- Modificar el precio');
+	writeln('f.-Finalizar modificacion');
 END;{menu}
 {---------------------------------Aqui acaban los subprogramas de Raul y empiezan los de Aitor-----------------------}
 PROCEDURE mostrarMenu;
@@ -491,15 +492,15 @@ BEGIN
 						CASE subopcion OF
 						'1':BEGIN
 							writeln('Modificar el tipo');
-							writeln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].tipo);
+							readln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].tipo);
 						END;
 						'2':BEGIN
 							writeln('Modificar la descripcion');
-							writeln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].descripcion);
+							readln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].descripcion);
 						END;
 						'3':BEGIN
 							writeln('Modificar el precio');
-							writeln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].precio:0:2);
+							readln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].precio);
 						END;
 						END;{CASE}
 					UNTIL (subopcion='f') OR (subopcion='F');
