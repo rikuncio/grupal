@@ -36,7 +36,106 @@ TYPE
 	END;
 	tFicheroPcs = FILE OF tPc;
 	tFicheroComponentes = FILE OF tComponente;
-{-----------------------------------------Aqui empiezan los subprogramas de Raul---------------------------}
+{-----------------------------------------Aqui empiezan los subprogramas de Garcy----------------------------------------}
+PROCEDURE mostrarPc (pc:tPc);
+BEGIN
+	WITH pc DO BEGIN
+		writeln('identificador del pc:');
+		writeln(datos.id);
+		writeln('Descripcion del pc:');
+		writeln(datos.descripcion);
+		writeln('Precio del pc');
+		writeln(datos.precio:0:2);
+	END;
+END;
+
+FUNCTION posicionPc(almaPc:tAlmacenPcs;idenPc:tIdentificador):integer;
+VAR
+	i:integer;
+BEGIN
+	i:=-1;
+	REPEAT
+	i:=i+1;
+	UNTIL (i=(almaPc.tope)) OR ((almaPc.listaPcs[i].datos.id)=(idenPc));
+	IF ((almaPc.listaPcs[i].datos.id)=(idenPc))THEN
+		posicionPc:=i
+	ELSE
+		posicionPc:=0;
+END;
+
+PROCEDURE eliminarPc(VAR almaPc:tAlmacenPcs;idenPc:tIdentificador);
+VAR
+	i:integer;
+BEGIN
+	i:=posicionPc(almaPc,idenPc);
+	WITH almaPc DO BEGIN
+		listaPcs[i]:=listaPcs[tope];
+		tope:=tope-1;
+	END;
+END;
+
+PROCEDURE mostrarComponente (componente:tComponente);
+BEGIN
+	WITH componente DO BEGIN
+	writeln ('Tipo: ', tipo);
+	writeln ('Identificador: ', id);
+	writeln ('Descripcion: ', descripcion);
+	writeln ('Precio: ', precio:0:2);
+	END;
+END;
+
+PROCEDURE mostrarComponentes (almacenComponentes: tAlmacenComponentes);
+VAR
+	i : integer;
+BEGIN
+	WITH almacenComponentes DO BEGIN
+		FOR i:= 1 TO tope-1 DO BEGIN
+		writeln('Componente ', i);
+		mostrarComponente(listaComponentes[i]);
+		writeln;
+		readln;
+		END;
+	END;
+END;
+
+PROCEDURE mostrarPcs (almaPc: tAlmacenPcs);
+VAR
+	i : integer;
+BEGIN
+	WITH almaPc DO BEGIN
+		FOR i:= 1 TO tope DO BEGIN
+		writeln('Pc ', i);
+		mostrarPc(listaPcs[i]);
+		writeln;
+		readln;
+		END;
+	END;
+END;
+
+PROCEDURE ordenarPrecios (VAR almaPc:tAlmacenPcs);
+VAR
+	i,j,posMenor:integer;
+	valorMenor:real;
+BEGIN
+	FOR i:= 1 TO almaPc.tope DO
+	BEGIN
+		valorMenor:= almaPc.listaPcs[i].datos.precio;
+		posMenor:=i;
+		FOR j:= succ(i) TO almaPc.tope DO
+			IF (almaPc.listaPcs[j].datos.precio < valorMenor) THEN
+			BEGIN
+				valorMenor:= almaPc.listaPcs[j].datos.precio;
+				posMenor:=j;
+			END;
+
+		IF (posMenor <> i) THEN
+		BEGIN
+			almaPc.listaPcs[posMenor].datos.precio:= almaPc.listaPcs[i].datos.precio;
+			almaPc.listaPcs[i].datos.precio:= valorMenor;
+		END;
+	END;
+END;
+{-----------------------------------------Aqui empiezan los subprogramas de Raul y terminan los de Garcy---------------------------}
 PROCEDURE inicio(VAR tien:tTienda);
 BEGIN{inicio}
 	WITH tien DO
@@ -540,10 +639,38 @@ BEGIN
 					eliminar(tienda.almacenComponentes,tienda.almacenComponentes.listaComponentes[aux].id);
 				END;
 			END;
-			{'E','e':
+			'e','E':
+			BEGIN
+				writeln('Introduzca el identificador del ordenador que desee comprar:');
+				readln(ide);
+				aux:=posicionPc(tienda.almacenPcs,ide);
+				IF(aux=0) THEN
+					writeln('El pc no esta en stock')
+				ELSE BEGIN
+					mostrarPc(tienda.almacenPcs.listaPcs[aux]);
+					writeln('¿Esta seguro de querer comprar este ordenador?  (S/N)');
+					readln(subopcion);
+					IF ((subopcion='s') OR (subopcion='S')) THEN BEGIN
+						tienda.ventasTotales:= (tienda.ventasTotales +  tienda.almacenPcs.listaPcs[aux].datos.precio);
+						eliminarPc(tienda.almacenPcs,tienda.almacenPcs.listaPcs[aux].datos.id);
+					END;
+				END;
+			END;
 			'F','f':
+			BEGIN
+				writeln('Las ventas totales de la tienda fueron de: ', tienda.ventasTotales:0:2);
+			END;
 			'G','g':
-			'H','h':}
+			BEGIN
+				writeln('Muestra todos los ordenadores de menor a mayor precio');
+				ordenarPrecios(tienda.almacenPcs);
+				mostrarPcs(tienda.almacenPcs);
+			END;
+			'H','h':
+			BEGIN
+				writeln('Muestra de todos los componentes sueltos');
+				mostrarComponentes(tienda.almacenComponentes);
+			END;
 			'I','i':
 			BEGIN
 				writeln('Al guardar los datos, se sobreescribiran los datos anteriormente guardados.');
