@@ -165,12 +165,14 @@ END;{eliminar}
 PROCEDURE mostrarComp (componenteMod:tComponente);
 BEGIN{mostrar}
 	WITH componenteMod DO BEGIN
-		writeln('Tipo del componente:');
-		writeln(tipo);
-		writeln('Descripcion del componente:');
-		writeln(descripcion);
-		writeln('Precio del componente');
-		writeln(precio:0:2);
+		writeln('Identificador del componente: ');
+		write(id);
+		writeln('Tipo del componente: ');
+		write(tipo);
+		writeln('Descripcion del componente: ');
+		write(descripcion);
+		writeln('Precio del componente ');
+		write(precio:0:2);
 	END;
 END;{mostrar}
 
@@ -482,27 +484,32 @@ BEGIN
 				writeln('Modificar un componente');
 				writeln('Introduzca el identificador del componente');
 				readln(modComp);
-				IF (posicion(tienda.almacenComponentes,modComp)=0) THEN
+				aux:=posicion(tienda.almacenComponentes,modComp);
+				IF (aux=0) THEN
 					writeln('El componente no esta en el almacen')
 				ELSE BEGIN
-					mostrarComp(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)]);
 					REPEAT
+						mostrarComp(tienda.almacenComponentes.listaComponentes[aux]);
 						menuComp;
 						readln(subopcion);
 						CASE subopcion OF
 						'1':BEGIN
 							writeln('Modificar el tipo');
-							readln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].tipo);
+							readln(tienda.almacenComponentes.listaComponentes[aux)].tipo);
+							writeln('Tipo modificado');
 						END;
 						'2':BEGIN
 							writeln('Modificar la descripcion');
-							readln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].descripcion);
+							readln(tienda.almacenComponentes.listaComponentes[aux].descripcion);
+							writeln('Descripcion modificada');
 						END;
 						'3':BEGIN
 							writeln('Modificar el precio');
-							readln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].precio);
+							readln(tienda.almacenComponentes.listaComponentes[aux)].precio);
+							writeln('Precio modificado');
 						END;
 						END;{CASE}
+						readln;
 					UNTIL (subopcion='f') OR (subopcion='F');
 				END;{BEGIN IF}
 			END;
