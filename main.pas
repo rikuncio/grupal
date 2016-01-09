@@ -85,17 +85,21 @@ END;{leerComp}
 PROCEDURE altaComponente (comp:tComponente; VAR almacenComp:tAlmacenComponentes);
 VAR
 	i:integer;
+	exi:boolean;
 BEGIN{alta}
+	exi:=FALSE;
 	FOR i:=0 to almacenComp.tope DO
 		IF comp.id=almacenComp.listaComponentes[i].id THEN
-			writeln('El identificador ya corresponde a otro componente')
-		ELSE
 		BEGIN
-			almacenComp.tope:=almacenComp.tope + 1;
-			almacenComp.listaComponentes[almacenComp.tope]:=comp;
+			writeln('El identificador ya corresponde a otro componente');
+			exi:=TRUE;
 		END;
+	IF NOT exi THEN
+	BEGIN
+		almacenComp.tope:=almacenComp.tope + 1;
+		almacenComp.listaComponentes[almacenComp.tope]:=comp;
+	END;
 END;{alta}
-
 
 PROCEDURE buscar (iden:tIdentificador;almacen:tAlmacenComponentes;VAR compo:tComponente; tip:string;VAR auxi:integer);
 VAR
