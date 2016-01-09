@@ -114,10 +114,13 @@ BEGIN
 	END;
 END;
 
+
+
 PROCEDURE ordenarPrecios (VAR almaPc:tAlmacenPcs);
 VAR
 	i,j,posMenor:integer;
 	valorMenor:real;
+	aux:tPc;
 BEGIN
 	FOR i:= 1 TO almaPc.tope DO
 	BEGIN
@@ -132,8 +135,9 @@ BEGIN
 
 		IF (posMenor <> i) THEN
 		BEGIN
-			almaPc.listaPcs[posMenor].datos.precio:= almaPc.listaPcs[i].datos.precio;
-			almaPc.listaPcs[i].datos.precio:= valorMenor;
+			aux:=almaPc.listaPcs[posMenor];
+			almaPc.listaPcs[posMenor]:= almaPc.listaPcs[i];
+			almaPc.listaPcs[i]:= aux;
 		END;
 	END;
 END;
@@ -222,18 +226,22 @@ BEGIN{proce}
 		writeln('El identificador no corresponde a un componente');
 END;{proce}
 
-
-
 PROCEDURE altaPc (ordenador:tPc; VAR almacen:tAlmacenPcs);
 VAR
 	i:integer;
+	exi:boolean;
 BEGIN{alta}
+	exi:=FALSE;
 	FOR i:=0 to almacen.tope DO
-		IF ordenador.datos.id=almacen.listaPcs[i].datos.id THEN
-			writeln('El identificador ya corresponde a otro ordenador')
-		ELSE IF almacen.tope=MAXPC THEN
-			writeln('El almacen de ordenadores está lleno')
-		ELSE
+		IF ordenador.datos.id=almacen.listaPcs[i].datos.id THEN BEGIN
+			exi:=TRUE;
+			writeln('El identificador ya corresponde a otro ordenador');
+			END
+		ELSE IF almacen.tope=MAXPC THEN BEGIN
+			exi:=TRUE;
+			writeln('El almacen de ordenadores está lleno');
+			END;
+		IF NOT exi THEN
 		BEGIN
 			almacen.tope:=almacen.tope + 1;
 			almacen.listaPcs[almacen.tope]:=ordenador;
