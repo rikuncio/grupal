@@ -36,7 +36,112 @@ TYPE
 	END;
 	tFicheroPcs = FILE OF tPc;
 	tFicheroComponentes = FILE OF tComponente;
-{-----------------------------------------Aqui empiezan los subprogramas de Raul---------------------------}
+{-----------------------------------------Aqui empiezan los subprogramas de Garcy----------------------------------------}
+PROCEDURE mostrarPc (pc:tPc);
+BEGIN
+	WITH pc DO BEGIN
+		writeln('identificador del pc:');
+		writeln(datos.id);
+		writeln('Descripcion del pc:');
+		writeln(datos.descripcion);
+		writeln('Precio del pc');
+		writeln(datos.precio:0:2);
+	END;
+END;
+
+FUNCTION posicionPc(almaPc:tAlmacenPcs;idenPc:tIdentificador):integer;
+VAR
+	i:integer;
+BEGIN
+	i:=-1;
+	REPEAT
+	i:=i+1;
+	UNTIL (i=(almaPc.tope)) OR ((almaPc.listaPcs[i].datos.id)=(idenPc));
+	IF ((almaPc.listaPcs[i].datos.id)=(idenPc))THEN
+		posicionPc:=i
+	ELSE
+		posicionPc:=0;
+END;
+
+PROCEDURE eliminarPc(VAR almaPc:tAlmacenPcs;idenPc:tIdentificador);
+VAR
+	i:integer;
+BEGIN
+	i:=posicionPc(almaPc,idenPc);
+	WITH almaPc DO BEGIN
+		listaPcs[i]:=listaPcs[tope];
+		tope:=tope-1;
+	END;
+END;
+
+PROCEDURE mostrarComp (componenteMod:tComponente);
+BEGIN{mostrar}
+	WITH componenteMod DO BEGIN
+		writeln('----------------------------------------');
+		writeln('Identificador del componente: ',id);
+		writeln('Tipo del componente: ',tipo);
+		writeln('Descripcion del componente: ',descripcion);
+		writeln('Precio del componente ',precio:0:2);
+		writeln('----------------------------------------');
+	END;
+END;{mostrar}
+
+PROCEDURE mostrarComponentes (almacenComponentes: tAlmacenComponentes);
+VAR
+	i : integer;
+BEGIN
+	WITH almacenComponentes DO BEGIN
+		FOR i:= 1 TO tope DO BEGIN
+		writeln('Componente ', i);
+		mostrarComp(listaComponentes[i]);
+		writeln;
+		readln;
+		END;
+	END;
+END;
+
+PROCEDURE mostrarPcs (almaPc: tAlmacenPcs);
+VAR
+	i : integer;
+BEGIN
+	WITH almaPc DO BEGIN
+		FOR i:= 1 TO tope DO BEGIN
+		writeln('Pc ', i);
+		mostrarPc(listaPcs[i]);
+		writeln;
+		readln;
+		END;
+	END;
+END;
+
+
+
+PROCEDURE ordenarPrecios (VAR almaPc:tAlmacenPcs);
+VAR
+	i,j,posMenor:integer;
+	valorMenor:real;
+	aux:tPc;
+BEGIN
+	FOR i:= 1 TO almaPc.tope DO
+	BEGIN
+		valorMenor:= almaPc.listaPcs[i].datos.precio;
+		posMenor:=i;
+		FOR j:= succ(i) TO almaPc.tope DO
+			IF (almaPc.listaPcs[j].datos.precio < valorMenor) THEN
+			BEGIN
+				valorMenor:= almaPc.listaPcs[j].datos.precio;
+				posMenor:=j;
+			END;
+
+		IF (posMenor <> i) THEN
+		BEGIN
+			aux:=almaPc.listaPcs[posMenor];
+			almaPc.listaPcs[posMenor]:= almaPc.listaPcs[i];
+			almaPc.listaPcs[i]:= aux;
+		END;
+	END;
+END;
+{-----------------------------------------Aqui empiezan los subprogramas de Raul y terminan los de Garcy---------------------------}
 PROCEDURE inicio(VAR tien:tTienda);
 BEGIN{inicio}
 	WITH tien DO
@@ -121,18 +226,22 @@ BEGIN{proce}
 		writeln('El identificador no corresponde a un componente');
 END;{proce}
 
-
-
 PROCEDURE altaPc (ordenador:tPc; VAR almacen:tAlmacenPcs);
 VAR
 	i:integer;
+	exi:boolean;
 BEGIN{alta}
+	exi:=FALSE;
 	FOR i:=0 to almacen.tope DO
-		IF ordenador.datos.id=almacen.listaPcs[i].datos.id THEN
-			writeln('El identificador ya corresponde a otro ordenador')
-		ELSE IF almacen.tope=MAXPC THEN
-			writeln('El almacen de ordenadores está lleno')
-		ELSE
+		IF ordenador.datos.id=almacen.listaPcs[i].datos.id THEN BEGIN
+			exi:=TRUE;
+			writeln('El identificador ya corresponde a otro ordenador');
+			END
+		ELSE IF almacen.tope=MAXPC THEN BEGIN
+			exi:=TRUE;
+			writeln('El almacen de ordenadores está lleno');
+			END;
+		IF NOT exi THEN
 		BEGIN
 			almacen.tope:=almacen.tope + 1;
 			almacen.listaPcs[almacen.tope]:=ordenador;
@@ -166,29 +275,14 @@ BEGIN{eliminar}
 	END;
 END;{eliminar}
 
-PROCEDURE mostrarComp (componenteMod:tComponente);
-BEGIN{mostrar}
-	WITH componenteMod DO BEGIN
-		writeln('----------------------------------------');
-		write('Identificador del componente: ');
-		writeln(id);
-		write('Tipo del componente: ');
-		writeln(tipo);
-		write('Descripcion del componente: ');
-		writeln(descripcion);
-		write('Precio del componente ');
-		writeln(precio:0:2);
-		writeln('----------------------------------------');
-	END;
-END;{mostrar}
 
 PROCEDURE menuComp;
 BEGIN{menu}
 	writeln('MENU DE MODIFICACION');
-	writeln('1.- Modificar el tipo');
-	writeln('2.- Modificar la descripcion');
-	writeln('3.- Modificar el precio');
-	writeln('f.-Finalizar modificacion');
+	writeln('1) Modificar el tipo');
+	writeln('2) Modificar la descripcion');
+	writeln('3) Modificar el precio');
+	writeln('4)Finalizar modificacion');
 END;{menu}
 {---------------------------------Aqui acaban los subprogramas de Raul y empiezan los de Aitor-----------------------}
 PROCEDURE mostrarMenu;
@@ -266,7 +360,26 @@ BEGIN
 		ventasTotales:=0;
 	END;
 END;
-
+PROCEDURE escribirGuardado(VAR fich:text;compo:tComponente);
+BEGIN
+	WITH compo DO
+	BEGIN
+		writeln(fich,tipo);
+		writeln(fich,id);
+		writeln(fich,descripcion);
+		writeln(fich,precio);
+	END;
+END;
+PROCEDURE escribirGuardadoPc(VAR fich:text;pcc:tPc);
+BEGIN
+	WITH pcc DO
+	BEGIN
+		escribirGuardado(fich,datos);
+		escribirGuardado(fich,memoria);
+		escribirGuardado(fich,procesador);
+		escribirGuardado(fich,discoDuro);
+	END;
+END;
 PROCEDURE guardarText (tien:tTienda; VAR fichComp:text; VAR fichPcs:text);
 VAR
 	i:integer;
@@ -276,53 +389,38 @@ BEGIN
 	WITH tien DO
 		WITH almacenComponentes DO
 			FOR i:=1 TO tope DO
-				WITH listacomponentes[i] DO
-    				BEGIN
-	    				writeln(fichComp,tipo);
-	    				writeln(fichComp,id);
-	    				writeln(fichComp,descripcion);
-	    				writeln(fichComp,precio);
-				END;
+				escribirGuardado(fichComp,listaComponentes[i]);
 	CLOSE(fichComp);
 	ASSIGN(fichPcs,'ordenadores.txt');
 	REWRITE(fichPcs);
 	WITH tien DO
 		WITH almacenPcs DO
 			FOR i:=1 TO tope DO
-				WITH listaPcs[i] DO
-				BEGIN
-					WITH datos DO
-					BEGIN
-						writeln(fichPcs,tipo);
-						writeln(fichPcs,id);
-						writeln(fichPcs,descripcion);
-						writeln(fichPcs,precio);
-					END;
-					WITH memoria DO
-					BEGIN
-						writeln(fichPcs,tipo);
-						writeln(fichPcs,id);
-						writeln(fichPcs,descripcion);
-						writeln(fichPcs,precio);
-					END;
-					WITH procesador DO
-					BEGIN
-						writeln(fichPcs,tipo);
-						writeln(fichPcs,id);
-						writeln(fichPcs,descripcion);
-						writeln(fichPcs,precio);
-					END;
-					WITH discoDuro DO
-					BEGIN
-						writeln(fichPcs,tipo);
-						writeln(fichPcs,id);
-						writeln(fichPcs,descripcion);
-						writeln(fichPcs,precio);
-					END;
-				END;
+				escribirGuardadoPc(fichPcs,listaPcs[i]);
 	CLOSE(fichPcs);
 END;
 
+PROCEDURE leerCarga(VAR fich:text;VAR compo:tComponente);
+BEGIN
+	WITH compo DO
+	BEGIN
+		readln(fich,tipo);
+		readln(fich,id);
+		readln(fich,descripcion);
+		readln(fich,precio);
+	END;
+END;
+
+PROCEDURE leerCargaPC(VAR fich:text;VAR pcc:tPc);
+BEGIN
+	WITH pcc DO
+	BEGIN
+		leerCarga(fich,datos);
+		leerCarga(fich,memoria);
+		leerCarga(fich,procesador);
+		leerCarga(fich,discoDuro);
+	END;
+END;
 PROCEDURE cargarText(VAR tien:tTienda; VAR fichComp:text; VAR fichPcs:text);
 VAR
 	i,j:integer;
@@ -335,50 +433,14 @@ BEGIN
 	RESET(fichComp);
 	WHILE NOT EOF(fichComp) DO
 	BEGIN
-		WITH listaC[i] DO
-		BEGIN
-			readln(fichComp,tipo);
-			readln(fichComp,id);
-			readln(fichComp,descripcion);
-			readln(fichComp,precio);
-		END;
+		leerCarga(fichComp,listaC[i]);
 		i:=i+1;
 	END;
 	ASSIGN(fichPcs,'ordenadores.txt');
 	RESET(fichPcs);
 	WHILE NOT EOF(fichPcs) DO
 	BEGIN
-		WITH listaP[j] DO
-		BEGIN
-			WITH datos DO
-			BEGIN
-				readln(fichPcs,tipo);
-				readln(fichPcs,id);
-				readln(fichPcs,descripcion);
-				readln(fichPcs,precio);
-			END;
-			WITH memoria DO
-			BEGIN
-				readln(fichPcs,tipo);
-				readln(fichPcs,id);
-				readln(fichPcs,descripcion);
-				readln(fichPcs,precio);
-			END;
-			WITH procesador DO
-			BEGIN
-				readln(fichPcs,tipo);
-				readln(fichPcs,id);
-				readln(fichPcs,descripcion);
-				readln(fichPcs,precio);
-			END;
-			WITH discoDuro DO
-			BEGIN
-				readln(fichPcs,tipo);
-				readln(fichPcs,id);
-				readln(fichPcs,descripcion);
-				readln(fichPcs,precio);
-			END;
-		END;
+		leerCargaPc(fichPcs,listaP[j]);
 		j:=j+1;
 	END;
 	WITH tien DO
@@ -540,10 +602,46 @@ BEGIN
 					eliminar(tienda.almacenComponentes,tienda.almacenComponentes.listaComponentes[aux].id);
 				END;
 			END;
-			{'E','e':
+			'e','E':
+			BEGIN
+				writeln('Introduzca el identificador del ordenador que desee comprar:');
+				readln(ide);
+				aux:=posicionPc(tienda.almacenPcs,ide);
+				IF(aux=0) THEN
+					writeln('El pc no esta en stock')
+				ELSE BEGIN
+					mostrarPc(tienda.almacenPcs.listaPcs[aux]);
+					writeln('¿Esta seguro de querer comprar este ordenador?  (S/N)');
+					readln(subopcion);
+					IF ((subopcion='s') OR (subopcion='S')) THEN BEGIN
+						tienda.ventasTotales:= (tienda.ventasTotales +  tienda.almacenPcs.listaPcs[aux].datos.precio);
+						eliminarPc(tienda.almacenPcs,tienda.almacenPcs.listaPcs[aux].datos.id);
+					END;
+				END;
+			END;
 			'F','f':
+			BEGIN
+				writeln('Las ventas totales de la tienda fueron de: ', tienda.ventasTotales:0:2);
+			END;
 			'G','g':
-			'H','h':}
+			BEGIN
+				writeln('Muestra todos los ordenadores de menor a mayor precio');
+				IF tienda.almacenPcs.tope=0 THEN
+					writeln('Almacen de pcs vacio')
+				ELSE
+				BEGIN
+					ordenarPrecios(tienda.almacenPcs);
+					mostrarPcs(tienda.almacenPcs);
+				END;
+			END;
+			'H','h':
+			BEGIN
+				writeln('Muestra de todos los componentes sueltos');
+				IF tienda.almacenComponentes.tope= 0 THEN
+					writeln('Almacen de componentes vacio')
+				ELSE
+				mostrarComponentes(tienda.almacenComponentes);
+			END;
 			'I','i':
 			BEGIN
 				writeln('Al guardar los datos, se sobreescribiran los datos anteriormente guardados.');
