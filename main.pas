@@ -56,11 +56,23 @@ BEGIN{comprobAlmacen}
 END;{comprobAlmacen}
 
 PROCEDURE leerComponente( VAR comp:tComponente);
+VAR
+	opc:char;
 BEGIN{leerComp}
 	WITH comp DO
 	BEGIN
-		writeln('Introduzca el tipo:');
-		readln(tipo);
+		REPEAT
+			writeln('Seleccione el tipo de componente:');
+			writeln('1) Procesador.');
+			writeln('2) Disco duro.');
+			writeln('3) Memoria.');
+			readln(opc);
+			CASE opc OF
+				'1':tipo:='procesador';
+				'2':tipo:='disco duro';
+				'3':tipo:='memoria';
+			END;
+		UNTIL ((opc='1') OR (opc='2') OR (opc='3'));
 		writeln('Introduzca el identificador:');
 		readln(id);
 		writeln('Introduzca la descripcion:');
@@ -73,19 +85,23 @@ END;{leerComp}
 PROCEDURE altaComponente (comp:tComponente; VAR almacenComp:tAlmacenComponentes);
 VAR
 	i:integer;
+	exi:boolean;
 BEGIN{alta}
+	exi:=FALSE;
 	FOR i:=0 to almacenComp.tope DO
 		IF comp.id=almacenComp.listaComponentes[i].id THEN
-			writeln('El identificador ya corresponde a otro componente')
-		ELSE
 		BEGIN
-			almacenComp.tope:=almacenComp.tope + 1;
-			almacenComp.listaComponentes[almacenComp.tope]:=comp;
+			writeln('El identificador ya corresponde a otro componente');
+			exi:=TRUE;
 		END;
+	IF NOT exi THEN
+	BEGIN
+		almacenComp.tope:=almacenComp.tope + 1;
+		almacenComp.listaComponentes[almacenComp.tope]:=comp;
+	END;
 END;{alta}
 
-
-FUNCTION buscar (iden:tIdentificador;almacen:tAlmacenComponentes):tComponente;
+PROCEDURE buscar (iden:tIdentificador;almacen:tAlmacenComponentes;VAR compo:tComponente; tip:string;VAR auxi:integer);
 VAR
 	i:integer;
 BEGIN{proce}
@@ -94,7 +110,13 @@ BEGIN{proce}
 		i:=i+1;
 	UNTIL(i=(almacen.tope)) OR ((almacen.listaComponentes[i].id)=(iden));
 	IF ((almacen.listaComponentes[i].id)=(iden)) THEN
-		buscar:=almacen.listaComponentes[i]
+		IF almacen.listaComponentes[i].tipo=tip THEN
+		BEGIN
+			compo:=almacen.listaComponentes[i];
+			auxi:=1;
+		END
+		ELSE
+			writeln('El componente elegido no es un ',tip)
 	ELSE
 		writeln('El identificador no corresponde a un componente');
 END;{proce}
@@ -108,7 +130,7 @@ BEGIN{alta}
 	FOR i:=0 to almacen.tope DO
 		IF ordenador.datos.id=almacen.listaPcs[i].datos.id THEN
 			writeln('El identificador ya corresponde a otro ordenador')
-		ELSE	IF almacen.tope=MAXPC THEN
+		ELSE IF almacen.tope=MAXPC THEN
 			writeln('El almacen de ordenadores está lleno')
 		ELSE
 		BEGIN
@@ -121,7 +143,7 @@ FUNCTION posicion(almacen:tAlmacenComponentes;comp:tIdentificador):integer;
 VAR
 	i:integer;
 BEGIN{posicion}
-	i:=0;
+	i:=-1;
 	REPEAT
 		i:=i+1;
 	UNTIL (i=(almacen.tope)) OR ((almacen.listaComponentes[i].id)=(comp));
@@ -147,12 +169,16 @@ END;{eliminar}
 PROCEDURE mostrarComp (componenteMod:tComponente);
 BEGIN{mostrar}
 	WITH componenteMod DO BEGIN
-		writeln('Tipo del componente:');
+		writeln('----------------------------------------');
+		write('Identificador del componente: ');
+		writeln(id);
+		write('Tipo del componente: ');
 		writeln(tipo);
-		writeln('Descripcion del componente:');
+		write('Descripcion del componente: ');
 		writeln(descripcion);
-		writeln('Precio del componente');
+		write('Precio del componente ');
 		writeln(precio:0:2);
+		writeln('----------------------------------------');
 	END;
 END;{mostrar}
 
@@ -161,7 +187,8 @@ BEGIN{menu}
 	writeln('MENU DE MODIFICACION');
 	writeln('1.- Modificar el tipo');
 	writeln('2.- Modificar la descripcion');
-	writeln('3.- Modificar el precio')
+	writeln('3.- Modificar el precio');
+	writeln('f.-Finalizar modificacion');
 END;{menu}
 {---------------------------------Aqui acaban los subprogramas de Raul y empiezan los de Aitor-----------------------}
 PROCEDURE mostrarMenu;
@@ -170,16 +197,16 @@ BEGIN
 	writeln('A) Dar de alta un componente.');
 	writeln('B) Configurar un ordenador.');
 	writeln('C) Modificar un componente.');
-	writeln('D) Vender un componente');
-	writeln('E) Vender un ordenador');
-	writeln('F) Mostrar las ventas actuales');
-	writeln('G) Mostrar todos los ordenadores ordenados por precio de menor a mayor');
-	writeln('H) Mostrar todos los componentes sueltos');
-	writeln('I) Guardar datos en ficheros binarios');
-	writeln('J) Guardar datos en ficheros de texto');
-	writeln('K) Cargar datos de ficheros binarios');
-	writeln('L) Cargar datos de ficheros de texto');
-	writeln('M) Finalizar');
+	writeln('D) Vender un componente.');
+	writeln('E) Vender un ordenador.');
+	writeln('F) Mostrar las ventas actuales.');
+	writeln('G) Mostrar todos los ordenadores ordenados por precio de menor a mayor.');
+	writeln('H) Mostrar todos los componentes sueltos.');
+	writeln('I) Guardar datos en ficheros binarios.');
+	writeln('J) Guardar datos en ficheros de texto.');
+	writeln('K) Cargar datos de ficheros binarios.');
+	writeln('L) Cargar datos de ficheros de texto.');
+	writeln('M) Finalizar.');
 	writeln('Introduzca una opcion:');
 END;
 PROCEDURE guardarBin (tien:tTienda; VAR fichComp:tFicheroComponentes; VAR fichPcs:tFicheroPcs);
@@ -424,35 +451,34 @@ BEGIN
 			'B','b':
 			BEGIN
 				WITH pc DO BEGIN
+					writeln('Configurar un ordenador:');
+					aux:=0;
 					REPEAT
-						aux:=0;
-						writeln('Configurar un ordenador:');
-						writeln;
-						writeln('Introduzca un identificador');
+						writeln('Introduzca un identificador de procesador');
 						readln(ide);
-						comp:=buscar(ide,tienda.almacenComponentes);
-						
-						IF (comp.tipo = 'procesador') AND ( aux = 0)THEN
-						BEGIN
-							procesador:=comp;
-							aux:=aux+1;
-						END
-						ELSE IF (comp.tipo = 'memoria') AND (aux=1) THEN
-						BEGIN
-							memoria:=comp;
-							aux:=aux+1;
-						END
-						ELSE IF (comp.tipo = 'discoDuro') AND (aux=2) THEN
-						BEGIN
-							discoDuro:=comp;
-							aux:=aux+1;
-						END;
-					UNTIL (aux = 3);
-					writeln('Introduzca un identificador');
+						buscar(ide,tienda.almacenComponentes,comp,'procesador',aux);
+					UNTIL (aux=1);
+					procesador:=comp;
+					aux:=0;
+					REPEAT
+						writeln('Introduzca un identificador de disco duro');
+						readln(ide);
+						buscar(ide,tienda.almacenComponentes,comp,'disco duro',aux);
+					UNTIL (aux=1);
+					discoDuro:=comp;
+					aux:=0;
+					REPEAT
+						writeln('Introduzca un identificador de memoria');
+						readln(ide);
+						buscar(ide,tienda.almacenComponentes,comp,'memoria',aux);
+					UNTIL (aux=1);
+					memoria:=comp;
+					writeln('Introduzca un identificador para el ordenador');
 					readln(datos.id);
-					writeln('Introudzca una descripcion');
+					writeln('Introduzca una descripcion del ordenador');
 					readln(datos.descripcion);
 					datos.precio:= procesador.precio+discoDuro.precio+memoria.precio+10;
+					datos.tipo:='Ordenador';
 				END;{WITH}
 				altaPc(pc,tienda.almacenPcs);
 				eliminar(tienda.almacenComponentes,pc.procesador.id);
@@ -464,27 +490,39 @@ BEGIN
 				writeln('Modificar un componente');
 				writeln('Introduzca el identificador del componente');
 				readln(modComp);
-				IF (posicion(tienda.almacenComponentes,modComp)=0) THEN
+				aux:=posicion(tienda.almacenComponentes,modComp);
+				IF (aux=0) THEN
 					writeln('El componente no esta en el almacen')
 				ELSE BEGIN
-					mostrarComp(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)]);
 					REPEAT
+						mostrarComp(tienda.almacenComponentes.listaComponentes[aux]);
 						menuComp;
 						readln(subopcion);
 						CASE subopcion OF
 						'1':BEGIN
-							writeln('Modificar el tipo');
-							writeln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].tipo);
+							REPEAT
+								writeln('Seleccione el tipo deseado :');
+								writeln('1) Procesador.');
+								writeln('2) Disco duro.');
+								writeln('3) Memoria.');
+								readln(subopcion);
+								CASE subopcion OF
+									'1':tienda.almacenComponentes.listaComponentes[aux].tipo:='procesador';
+									'2':tienda.almacenComponentes.listaComponentes[aux].tipo:='disco duro';
+									'3':tienda.almacenComponentes.listaComponentes[aux].tipo:='memoria';
+								END;
+							UNTIL ((subopcion='1') OR (subopcion='2') OR (subopcion='3'));
 						END;
 						'2':BEGIN
 							writeln('Modificar la descripcion');
-							writeln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].descripcion);
+							readln(tienda.almacenComponentes.listaComponentes[aux].descripcion);
 						END;
 						'3':BEGIN
 							writeln('Modificar el precio');
-							writeln(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,modComp)].precio:0:2);
+							readln(tienda.almacenComponentes.listaComponentes[aux].precio);
 						END;
 						END;{CASE}
+						readln;
 					UNTIL (subopcion='f') OR (subopcion='F');
 				END;{BEGIN IF}
 			END;
@@ -493,13 +531,13 @@ BEGIN
 				writeln('Vender componente');
 				writeln('Introduzca el identificador del componente');
 				readln(venta);
-				IF (posicion(tienda.almacenComponentes,venta)=0) THEN
+				aux:=posicion(tienda.almacenComponentes,venta);
+				IF (aux=0) THEN
 					writeln('El componente no existe')
 				ELSE BEGIN
-					mostrarComp(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,venta)]);
-					readln;
-					tienda.ventasTotales:= (tienda.ventasTotales +  tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,venta)].precio);
-					eliminar(tienda.almacenComponentes,tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,venta)].id)
+					mostrarComp(tienda.almacenComponentes.listaComponentes[aux]);
+					tienda.ventasTotales:= (tienda.ventasTotales +  tienda.almacenComponentes.listaComponentes[aux].precio);
+					eliminar(tienda.almacenComponentes,tienda.almacenComponentes.listaComponentes[aux].id);
 				END;
 			END;
 			{'E','e':
