@@ -269,14 +269,10 @@ PROCEDURE mostrarComp (componenteMod:tComponente);
 BEGIN{mostrar}
 	WITH componenteMod DO BEGIN
 		writeln('----------------------------------------');
-		write('Identificador del componente: ');
-		writeln(id);
-		write('Tipo del componente: ');
-		writeln(tipo);
-		write('Descripcion del componente: ');
-		writeln(descripcion);
-		write('Precio del componente ');
-		writeln(precio:0:2);
+		writeln('Identificador del componente: ',id);
+		writeln('Tipo del componente: ',tipo);
+		writeln('Descripcion del componente: ',descripcion);
+		writeln('Precio del componente ',precio:0:2);
 		writeln('----------------------------------------');
 	END;
 END;{mostrar}
