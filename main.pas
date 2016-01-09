@@ -74,24 +74,26 @@ BEGIN
 	END;
 END;
 
-PROCEDURE mostrarComponente (componente:tComponente);
-BEGIN
-	WITH componente DO BEGIN
-	writeln ('Tipo: ', tipo);
-	writeln ('Identificador: ', id);
-	writeln ('Descripcion: ', descripcion);
-	writeln ('Precio: ', precio:0:2);
+PROCEDURE mostrarComp (componenteMod:tComponente);
+BEGIN{mostrar}
+	WITH componenteMod DO BEGIN
+		writeln('----------------------------------------');
+		writeln('Identificador del componente: ',id);
+		writeln('Tipo del componente: ',tipo);
+		writeln('Descripcion del componente: ',descripcion);
+		writeln('Precio del componente ',precio:0:2);
+		writeln('----------------------------------------');
 	END;
-END;
+END;{mostrar}
 
 PROCEDURE mostrarComponentes (almacenComponentes: tAlmacenComponentes);
 VAR
 	i : integer;
 BEGIN
 	WITH almacenComponentes DO BEGIN
-		FOR i:= 1 TO tope-1 DO BEGIN
+		FOR i:= 1 TO tope DO BEGIN
 		writeln('Componente ', i);
-		mostrarComponente(listaComponentes[i]);
+		mostrarComp(listaComponentes[i]);
 		writeln;
 		readln;
 		END;
@@ -265,25 +267,14 @@ BEGIN{eliminar}
 	END;
 END;{eliminar}
 
-PROCEDURE mostrarComp (componenteMod:tComponente);
-BEGIN{mostrar}
-	WITH componenteMod DO BEGIN
-		writeln('----------------------------------------');
-		writeln('Identificador del componente: ',id);
-		writeln('Tipo del componente: ',tipo);
-		writeln('Descripcion del componente: ',descripcion);
-		writeln('Precio del componente ',precio:0:2);
-		writeln('----------------------------------------');
-	END;
-END;{mostrar}
 
 PROCEDURE menuComp;
 BEGIN{menu}
 	writeln('MENU DE MODIFICACION');
-	writeln('1.- Modificar el tipo');
-	writeln('2.- Modificar la descripcion');
-	writeln('3.- Modificar el precio');
-	writeln('f.-Finalizar modificacion');
+	writeln('1) Modificar el tipo');
+	writeln('2) Modificar la descripcion');
+	writeln('3) Modificar el precio');
+	writeln('4)Finalizar modificacion');
 END;{menu}
 {---------------------------------Aqui acaban los subprogramas de Raul y empiezan los de Aitor-----------------------}
 PROCEDURE mostrarMenu;
@@ -361,7 +352,26 @@ BEGIN
 		ventasTotales:=0;
 	END;
 END;
-
+PROCEDURE escribirGuardado(VAR fich:text;compo:tComponente);
+BEGIN
+	WITH compo DO
+	BEGIN
+		writeln(fich,tipo);
+		writeln(fich,id);
+		writeln(fich,descripcion);
+		writeln(fich,precio);
+	END;
+END;
+PROCEDURE escribirGuardadoPc(VAR fich:text;pcc:tPc);
+BEGIN
+	WITH pcc DO
+	BEGIN
+		escribirGuardado(fich,datos);
+		escribirGuardado(fich,memoria);
+		escribirGuardado(fich,procesador);
+		escribirGuardado(fich,discoDuro);
+	END;
+END;
 PROCEDURE guardarText (tien:tTienda; VAR fichComp:text; VAR fichPcs:text);
 VAR
 	i:integer;
@@ -371,53 +381,38 @@ BEGIN
 	WITH tien DO
 		WITH almacenComponentes DO
 			FOR i:=1 TO tope DO
-				WITH listacomponentes[i] DO
-    				BEGIN
-	    				writeln(fichComp,tipo);
-	    				writeln(fichComp,id);
-	    				writeln(fichComp,descripcion);
-	    				writeln(fichComp,precio);
-				END;
+				escribirGuardado(fichComp,listaComponentes[i]);
 	CLOSE(fichComp);
 	ASSIGN(fichPcs,'ordenadores.txt');
 	REWRITE(fichPcs);
 	WITH tien DO
 		WITH almacenPcs DO
 			FOR i:=1 TO tope DO
-				WITH listaPcs[i] DO
-				BEGIN
-					WITH datos DO
-					BEGIN
-						writeln(fichPcs,tipo);
-						writeln(fichPcs,id);
-						writeln(fichPcs,descripcion);
-						writeln(fichPcs,precio);
-					END;
-					WITH memoria DO
-					BEGIN
-						writeln(fichPcs,tipo);
-						writeln(fichPcs,id);
-						writeln(fichPcs,descripcion);
-						writeln(fichPcs,precio);
-					END;
-					WITH procesador DO
-					BEGIN
-						writeln(fichPcs,tipo);
-						writeln(fichPcs,id);
-						writeln(fichPcs,descripcion);
-						writeln(fichPcs,precio);
-					END;
-					WITH discoDuro DO
-					BEGIN
-						writeln(fichPcs,tipo);
-						writeln(fichPcs,id);
-						writeln(fichPcs,descripcion);
-						writeln(fichPcs,precio);
-					END;
-				END;
+				escribirGuardadoPc(fichPcs,listaPcs[i]);
 	CLOSE(fichPcs);
 END;
 
+PROCEDURE leerCarga(VAR fich:text;VAR compo:tComponente);
+BEGIN
+	WITH compo DO
+	BEGIN
+		readln(fich,tipo);
+		readln(fich,id);
+		readln(fich,descripcion);
+		readln(fich,precio);
+	END;
+END;
+
+PROCEDURE leerCargaPC(VAR fich:text;VAR pcc:tPc);
+BEGIN
+	WITH pcc DO
+	BEGIN
+		leerCarga(fich,datos);
+		leerCarga(fich,memoria);
+		leerCarga(fich,procesador);
+		leerCarga(fich,discoDuro);
+	END;
+END;
 PROCEDURE cargarText(VAR tien:tTienda; VAR fichComp:text; VAR fichPcs:text);
 VAR
 	i,j:integer;
@@ -430,50 +425,14 @@ BEGIN
 	RESET(fichComp);
 	WHILE NOT EOF(fichComp) DO
 	BEGIN
-		WITH listaC[i] DO
-		BEGIN
-			readln(fichComp,tipo);
-			readln(fichComp,id);
-			readln(fichComp,descripcion);
-			readln(fichComp,precio);
-		END;
+		leerCarga(fichComp,listaC[i]);
 		i:=i+1;
 	END;
 	ASSIGN(fichPcs,'ordenadores.txt');
 	RESET(fichPcs);
 	WHILE NOT EOF(fichPcs) DO
 	BEGIN
-		WITH listaP[j] DO
-		BEGIN
-			WITH datos DO
-			BEGIN
-				readln(fichPcs,tipo);
-				readln(fichPcs,id);
-				readln(fichPcs,descripcion);
-				readln(fichPcs,precio);
-			END;
-			WITH memoria DO
-			BEGIN
-				readln(fichPcs,tipo);
-				readln(fichPcs,id);
-				readln(fichPcs,descripcion);
-				readln(fichPcs,precio);
-			END;
-			WITH procesador DO
-			BEGIN
-				readln(fichPcs,tipo);
-				readln(fichPcs,id);
-				readln(fichPcs,descripcion);
-				readln(fichPcs,precio);
-			END;
-			WITH discoDuro DO
-			BEGIN
-				readln(fichPcs,tipo);
-				readln(fichPcs,id);
-				readln(fichPcs,descripcion);
-				readln(fichPcs,precio);
-			END;
-		END;
+		leerCargaPc(fichPcs,listaP[j]);
 		j:=j+1;
 	END;
 	WITH tien DO
@@ -659,12 +618,20 @@ BEGIN
 			'G','g':
 			BEGIN
 				writeln('Muestra todos los ordenadores de menor a mayor precio');
-				ordenarPrecios(tienda.almacenPcs);
-				mostrarPcs(tienda.almacenPcs);
+				IF tienda.almacenPcs.tope=0 THEN
+					writeln('Almacen de pcs vacio')
+				ELSE
+				BEGIN
+					ordenarPrecios(tienda.almacenPcs);
+					mostrarPcs(tienda.almacenPcs);
+				END;
 			END;
 			'H','h':
 			BEGIN
 				writeln('Muestra de todos los componentes sueltos');
+				IF tienda.almacenComponentes.tope= 0 THEN
+					writeln('Almacen de componentes vacio')
+				ELSE
 				mostrarComponentes(tienda.almacenComponentes);
 			END;
 			'I','i':
