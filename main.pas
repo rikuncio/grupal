@@ -57,7 +57,7 @@ END;{comprobAlmacen}
 
 PROCEDURE leerComponente( VAR comp:tComponente);
 VAR
-	opc:integer;
+	opc:char;
 BEGIN{leerComp}
 	WITH comp DO
 	BEGIN
@@ -68,11 +68,11 @@ BEGIN{leerComp}
 			writeln('3) Memoria.');
 			readln(opc);
 			CASE opc OF
-				1:tipo:='procesador';
-				2:tipo:='disco duro';
-				3:tipo:='memoria';
+				'1':tipo:='procesador';
+				'2':tipo:='disco duro';
+				'3':tipo:='memoria';
 			END;
-		UNTIL ((opc=1) OR (opc=2) OR (opc=3));
+		UNTIL ((opc='1') OR (opc='2') OR (opc='3'));
 		writeln('Introduzca el identificador:');
 		readln(id);
 		writeln('Introduzca la descripcion:');
@@ -139,7 +139,7 @@ FUNCTION posicion(almacen:tAlmacenComponentes;comp:tIdentificador):integer;
 VAR
 	i:integer;
 BEGIN{posicion}
-	i:=0;
+	i:=-1;
 	REPEAT
 		i:=i+1;
 	UNTIL (i=(almacen.tope)) OR ((almacen.listaComponentes[i].id)=(comp));
@@ -165,14 +165,16 @@ END;{eliminar}
 PROCEDURE mostrarComp (componenteMod:tComponente);
 BEGIN{mostrar}
 	WITH componenteMod DO BEGIN
-		writeln('Identificador del componente: ');
-		write(id);
-		writeln('Tipo del componente: ');
-		write(tipo);
-		writeln('Descripcion del componente: ');
-		write(descripcion);
-		writeln('Precio del componente ');
-		write(precio:0:2);
+		writeln('----------------------------------------');
+		write('Identificador del componente: ');
+		writeln(id);
+		write('Tipo del componente: ');
+		writeln(tipo);
+		write('Descripcion del componente: ');
+		writeln(descripcion);
+		write('Precio del componente ');
+		writeln(precio:0:2);
+		writeln('----------------------------------------');
 	END;
 END;{mostrar}
 
@@ -494,19 +496,26 @@ BEGIN
 						readln(subopcion);
 						CASE subopcion OF
 						'1':BEGIN
-							writeln('Modificar el tipo');
-							readln(tienda.almacenComponentes.listaComponentes[aux)].tipo);
-							writeln('Tipo modificado');
+							REPEAT
+								writeln('Seleccione el tipo deseado :');
+								writeln('1) Procesador.');
+								writeln('2) Disco duro.');
+								writeln('3) Memoria.');
+								readln(subopcion);
+								CASE subopcion OF
+									'1':tienda.almacenComponentes.listaComponentes[aux].tipo:='procesador';
+									'2':tienda.almacenComponentes.listaComponentes[aux].tipo:='disco duro';
+									'3':tienda.almacenComponentes.listaComponentes[aux].tipo:='memoria';
+								END;
+							UNTIL ((subopcion='1') OR (subopcion='2') OR (subopcion='3'));
 						END;
 						'2':BEGIN
 							writeln('Modificar la descripcion');
 							readln(tienda.almacenComponentes.listaComponentes[aux].descripcion);
-							writeln('Descripcion modificada');
 						END;
 						'3':BEGIN
 							writeln('Modificar el precio');
-							readln(tienda.almacenComponentes.listaComponentes[aux)].precio);
-							writeln('Precio modificado');
+							readln(tienda.almacenComponentes.listaComponentes[aux].precio);
 						END;
 						END;{CASE}
 						readln;
@@ -518,13 +527,13 @@ BEGIN
 				writeln('Vender componente');
 				writeln('Introduzca el identificador del componente');
 				readln(venta);
-				IF (posicion(tienda.almacenComponentes,venta)=0) THEN
+				aux:=posicion(tienda.almacenComponentes,venta);
+				IF (aux=0) THEN
 					writeln('El componente no existe')
 				ELSE BEGIN
-					mostrarComp(tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,venta)]);
-					readln;
-					tienda.ventasTotales:= (tienda.ventasTotales +  tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,venta)].precio);
-					eliminar(tienda.almacenComponentes,tienda.almacenComponentes.listaComponentes[posicion(tienda.almacenComponentes,venta)].id)
+					mostrarComp(tienda.almacenComponentes.listaComponentes[aux]);
+					tienda.ventasTotales:= (tienda.ventasTotales +  tienda.almacenComponentes.listaComponentes[aux].precio);
+					eliminar(tienda.almacenComponentes,tienda.almacenComponentes.listaComponentes[aux].id);
 				END;
 			END;
 			{'E','e':
