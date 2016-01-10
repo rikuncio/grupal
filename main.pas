@@ -1,16 +1,16 @@
 PROGRAM tiendaURJC;
 CONST
-	NCTIPO = 15; 
-	NCIDENTIFICADOR = 4; 
-	MAXPC = 25; 
-	MAXCOMPONENTES = 100; 
+	NCTIPO = 15;
+	NCIDENTIFICADOR = 4;
+	MAXPC = 25;
+	MAXCOMPONENTES = 100;
 	MIN = 1;
 TYPE
-	tTipo = string[NCTIPO]; 
-	tIdentificador = string[NCIDENTIFICADOR]; 
-	tNumComponentes = MIN..MAXCOMPONENTES; 
-	tNumPc = MIN..MAXPC; 
-	tComponente = RECORD 
+	tTipo = string[NCTIPO];
+	tIdentificador = string[NCIDENTIFICADOR];
+	tNumComponentes = MIN..MAXCOMPONENTES;
+	tNumPc = MIN..MAXPC;
+	tComponente = RECORD
 		tipo: tTipo;
 		id: tIdentificador;
 		descripcion: string;
@@ -25,14 +25,14 @@ TYPE
 		listaComponentes : tListaComponentes;
 		tope: integer;
 	END;
-	tAlmacenPcs = RECORD 
+	tAlmacenPcs = RECORD
 		listaPcs : tListaPcs;
 		tope: integer;
 	END;
 	tTienda = RECORD
 		almacenPcs : tAlmacenPcs;
 		almacenComponentes: tAlmacenComponentes;
-		ventasTotales: real; 
+		ventasTotales: real;
 	END;
 	tFicheroPcs = FILE OF tPc;
 	tFicheroComponentes = FILE OF tComponente;
@@ -331,15 +331,15 @@ VAR
 BEGIN
 	i:=1;
 	j:=1;
-	ASSIGN(fichComp,'componentes.dat');
-	RESET(fichComp);
+	assign (fichComp,'componentes.dat');
+	reset (fichComp);
 	WHILE NOT EOF(fichComp) DO
 	BEGIN
 		read(fichComp,listaC[i]);
 		i:=i+1;
 	END;
-	ASSIGN(fichPcs,'ordenadores.dat');
-	RESET(fichPcs);
+	assign(fichPcs,'ordenadores.dat');
+	reset(fichPcs);
 	WHILE NOT EOF(fichPcs) DO
 	BEGIN
 		read(fichPcs,listaP[j]);
@@ -462,22 +462,26 @@ FUNCTION comprobarFicheros(tipo:string):boolean;
 VAR
 	fich:text;
 BEGIN
-	ASSIGN (fich,'componentes.'+tipo);
+	assign(fich,'componentes.'+tipo);
 	{$i-}
-	RESET (fich);
+	reset(fich);
 	{$i+}
 	IF (IOResult<>0) THEN
 		comprobarFicheros:=FALSE
 	ELSE
 	BEGIN
-		ASSIGN (fich,'ordenadores.'+tipo);
+		close(fich);
+		assign(fich,'ordenadores.'+tipo);
 		{$i-}
-		RESET (fich);
+		reset(fich);
 		{$i+}
 		IF (IOResult<>0) THEN
 			comprobarFicheros:=FALSE
 		ELSE
+		BEGIN
+			close(fich);
 			comprobarFicheros:=TRUE;
+		END;
 	END;
 END;
 {----------------------Aqui estan las VAR----------------------}
