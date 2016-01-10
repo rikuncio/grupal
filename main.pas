@@ -36,7 +36,7 @@ TYPE
 	END;
 	tFicheroPcs = FILE OF tPc;
 	tFicheroComponentes = FILE OF tComponente;
-{-----------------------------------------Aqui empiezan los subprogramas de Garcy----------------------------------------}
+{-----------------------------------------Aqui empiezan los subprogramas de Daniel----------------------------------------}
 PROCEDURE mostrarPc (pc:tPc);
 BEGIN
 	WITH pc DO BEGIN
@@ -113,8 +113,6 @@ BEGIN
 		END;
 	END;
 END;
-
-
 
 PROCEDURE ordenarPrecios (VAR almaPc:tAlmacenPcs);
 VAR
@@ -262,7 +260,6 @@ BEGIN{posicion}
 		posicion:=0;
 END;{posicion}
 
-
 PROCEDURE eliminar(VAR almacen:tAlmacenComponentes;componente:tIdentificador);
 VAR
 	posi:integer;
@@ -274,7 +271,6 @@ BEGIN{eliminar}
 		tope:=tope-1;
 	END;
 END;{eliminar}
-
 
 PROCEDURE menuComp;
 BEGIN{menu}
