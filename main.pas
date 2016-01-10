@@ -303,19 +303,19 @@ PROCEDURE guardarBin (tien:tTienda; VAR fichComp:tFicheroComponentes; VAR fichPc
 VAR
 	i:integer;
 BEGIN
-	ASSIGN(fichComp,'componentes.dat');
-	REWRITE(fichComp);
+	assign(fichComp,'componentes.dat');
+	rewrite(fichComp);
 	WITH tien DO
 		WITH almacenComponentes DO
 			FOR i:=1 TO tope DO
-				WRITE(fichComp,listaComponentes[i]);
-	CLOSE(fichComp);
-	ASSIGN(fichPcs,'ordenadores.dat');
-	REWRITE(fichPcs);
+				write(fichComp,listaComponentes[i]);
+	close(fichComp);
+	assign(fichPcs,'ordenadores.dat');
+	rewrite(fichPcs);
 	WITH tien DO
 		WITH almacenPcs DO
 			FOR i:=1 TO tope DO
-				WRITE(fichPcs,listaPcs[i]);
+				write(fichPcs,listaPcs[i]);
 	CLOSE(fichPcs);
 END;
 
@@ -334,6 +334,7 @@ BEGIN
 		read(fichComp,listaC[i]);
 		i:=i+1;
 	END;
+	close(fichComp);
 	assign(fichPcs,'ordenadores.dat');
 	reset(fichPcs);
 	WHILE NOT EOF(fichPcs) DO
@@ -341,6 +342,7 @@ BEGIN
 		read(fichPcs,listaP[j]);
 		j:=j+1;
 	END;
+	close(fichPcs);
 	WITH tien DO
 	BEGIN
 		WITH almacenPcs DO
@@ -356,6 +358,7 @@ BEGIN
 		ventasTotales:=0;
 	END;
 END;
+
 PROCEDURE escribirGuardado(VAR fich:text;compo:tComponente);
 BEGIN
 	WITH compo DO
@@ -380,20 +383,20 @@ PROCEDURE guardarText (tien:tTienda; VAR fichComp:text; VAR fichPcs:text);
 VAR
 	i:integer;
 BEGIN
-	ASSIGN(fichComp,'componentes.txt');
-	REWRITE(fichComp);
+	assign(fichComp,'componentes.txt');
+	rewrite(fichComp);
 	WITH tien DO
 		WITH almacenComponentes DO
 			FOR i:=1 TO tope DO
 				escribirGuardado(fichComp,listaComponentes[i]);
-	CLOSE(fichComp);
-	ASSIGN(fichPcs,'ordenadores.txt');
-	REWRITE(fichPcs);
+	close(fichComp);
+	assign(fichPcs,'ordenadores.txt');
+	rewrite(fichPcs);
 	WITH tien DO
 		WITH almacenPcs DO
 			FOR i:=1 TO tope DO
 				escribirGuardadoPc(fichPcs,listaPcs[i]);
-	CLOSE(fichPcs);
+	close(fichPcs);
 END;
 
 PROCEDURE leerCarga(VAR fich:text;VAR compo:tComponente);
@@ -425,20 +428,22 @@ VAR
 BEGIN
 	i:=1;
 	j:=1;
-	ASSIGN(fichComp,'componentes.txt');
-	RESET(fichComp);
+	assign(fichComp,'componentes.txt');
+	reset(fichComp);
 	WHILE NOT EOF(fichComp) DO
 	BEGIN
 		leerCarga(fichComp,listaC[i]);
 		i:=i+1;
 	END;
-	ASSIGN(fichPcs,'ordenadores.txt');
-	RESET(fichPcs);
+	close(fichComp);
+	assign(fichPcs,'ordenadores.txt');
+	reset(fichPcs);
 	WHILE NOT EOF(fichPcs) DO
 	BEGIN
 		leerCargaPc(fichPcs,listaP[j]);
 		j:=j+1;
 	END;
+	close(fichPcs);
 	WITH tien DO
 	BEGIN
 		WITH almacenPcs DO
